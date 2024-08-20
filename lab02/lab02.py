@@ -14,6 +14,11 @@ def composite_identity(f, g):
     False
     """
     "*** YOUR CODE HERE ***"
+    def func(x):
+        if g(f(x)) == f(g(x)):
+            return True
+        return False
+    return func
 
 
 def sum_digits(y):
@@ -60,6 +65,14 @@ def count_cond(condition):
     8
     """
     "*** YOUR CODE HERE ***"
+    def count(n):
+        i, num = 1, 0
+        while i <= n:
+            if condition(n, i) == True:
+                num += 1
+            i += 1
+        return num
+    return count
 
 
 def multiple(a, b):
@@ -72,6 +85,23 @@ def multiple(a, b):
     """
     "*** YOUR CODE HERE ***"
 
+    """ loop
+    i = a * b
+    smallest_multiple = a * b
+    while i >= a and i >= b:
+        if i % a == 0 and i % b == 0:
+            smallest_multiple = i
+        i -= 1
+    return smallest_multiple
+    """
+
+    # euclidean algorithm
+    if a > b:
+        a, b = b, a
+    i, j = a, b
+    while j > 0:
+        i, j = j, i % j
+    return a * b // i
 
 
 def cycle(f1, f2, f3):
@@ -101,4 +131,17 @@ def cycle(f1, f2, f3):
     19
     """
     "*** YOUR CODE HERE ***"
-
+    def g(n):
+        def h(x):
+            count = n
+            ans = x
+            while count >= 3:
+                ans = f3(f2(f1(ans)))
+                count -= 3
+            if count == 2:
+                ans = f2(f1(ans))
+            elif count == 1:
+                ans = f1(ans)
+            return ans
+        return h
+    return g
