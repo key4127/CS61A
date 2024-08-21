@@ -16,6 +16,14 @@ def flatten(s):
     ['m', 'i', 'n', 'm', 'e', 'w', 't', 'a', 't', 'i', 'o', 'n', 's']
     """
     "*** YOUR CODE HERE ***"
+    result = []
+    for i in s:
+        if type(i) != list:
+            result += [i]
+        else:
+            result += flatten(i)
+    return result
+
 
 
 def merge(s, t):
@@ -42,6 +50,14 @@ def merge(s, t):
     True
     """
     "*** YOUR CODE HERE ***"
+    if s == []:
+        return t
+    if t == []:
+        return s
+    if s[0] <= t[0]:
+        return [s[0]] + merge(s[1:], t)
+    else:
+        return [t[0]] + merge(s, t[1:])
 
 
 def size_of_tree(t):
@@ -59,6 +75,12 @@ def size_of_tree(t):
     7
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return 1
+    result = 1
+    for i in branches(t):
+        result += size_of_tree(i)
+    return result
 
 
 def replace_loki_at_leaf(t, lokis_replacement):
@@ -91,7 +113,16 @@ def replace_loki_at_leaf(t, lokis_replacement):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    if is_leaf(t):
+        if t[0] == "loki":
+            return tree(lokis_replacement)
+        else:
+            return tree(t[0])
+    new_branches = []
+    for i in branches(t):
+        new_branches += tree(replace_loki_at_leaf(i, lokis_replacement))
+    return tree(t[0], new_branches)
+    
 
 def divide(quotients, divisors):
     """Return a dictonary in which each quotient q is a key for the list of
@@ -102,8 +133,7 @@ def divide(quotients, divisors):
     >>> divide(range(1, 5), range(20, 25))
     {1: [20, 21, 22, 23, 24], 2: [20, 22, 24], 3: [21, 24], 4: [20, 24]}
     """
-    return {____: ____ for ____ in ____}
-
+    return {i: [j for j in divisors if j % i == 0] for i in quotients}
 
 
 # Tree Data Abstraction
