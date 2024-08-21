@@ -32,6 +32,12 @@ def product(n, term):
     162
     """
     "*** YOUR CODE HERE ***"
+    ans = 1
+    i = 1
+    while i <= n:
+        ans *= term(i)
+        i += 1
+    return ans
 
 
 def accumulate(fuse, start, n, term):
@@ -54,6 +60,12 @@ def accumulate(fuse, start, n, term):
     19
     """
     "*** YOUR CODE HERE ***"
+    ans = start
+    i = 1
+    while i <= n:
+        ans = fuse(ans, term(i))
+        i += 1
+    return ans
 
 
 def summation_using_accumulate(n, term):
@@ -68,7 +80,7 @@ def summation_using_accumulate(n, term):
     >>> [type(x).__name__ for x in ast.parse(inspect.getsource(summation_using_accumulate)).body[0].body]
     ['Expr', 'Return']
     """
-    return ____
+    return accumulate(add, 0, n, term)
 
 
 def product_using_accumulate(n, term):
@@ -83,8 +95,7 @@ def product_using_accumulate(n, term):
     >>> [type(x).__name__ for x in ast.parse(inspect.getsource(product_using_accumulate)).body[0].body]
     ['Expr', 'Return']
     """
-    return ____
-
+    return accumulate(mul, 1, n, term)
 
 def make_repeater(f, n):
     """Returns the function that computes the nth application of f.
@@ -100,6 +111,14 @@ def make_repeater(f, n):
     390625
     """
     "*** YOUR CODE HERE ***"
+    def repeater(x):
+        count = n
+        ans = x
+        while count > 0:
+            ans = f(ans)
+            count -= 1
+        return ans
+    return repeater
 
 
 def digit_distance(n):
@@ -122,6 +141,9 @@ def digit_distance(n):
     True
     """
     "*** YOUR CODE HERE ***"
+    if n < 10:
+        return 0
+    return digit_distance(n // 10) + abs(n // 10 % 10 - n % 10)
 
 
 def interleaved_sum(n, odd_func, even_func):
@@ -146,6 +168,14 @@ def interleaved_sum(n, odd_func, even_func):
     True
     """
     "*** YOUR CODE HERE ***"
+    def helper(i):
+        if i > n:
+            return 0
+        elif i == n:
+            return odd_func(i)
+        else:
+            return helper(i + 2) + even_func(i + 1) + odd_func(i)
+    return helper(1)
 
 
 def next_larger_coin(coin):
@@ -200,4 +230,19 @@ def count_coins(total):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    # I wonder if there were better solution
+    def count(total, largest_coin):
+        if total == 0:
+            return 1
+        if total < largest_coin:
+            return count(total, next_smaller_coin(largest_coin))
+        ans = 0
+        if largest_coin >= 25:
+            ans += count(total - 25, 25)
+        if largest_coin >= 10:
+            ans += count(total - 10, 10)
+        if largest_coin >= 5:
+            ans += count(total - 5, 5)
+        ans += count(total - 1, 1)
+        return ans
+    return count(total, 25)
