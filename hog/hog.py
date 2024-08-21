@@ -47,12 +47,7 @@ def boar_brawl(player_score, opponent_score):
     "*** YOUR CODE HERE ***"
     one_digit = player_score % 10
     ten_digit = opponent_score // 10 % 10
-    if one_digit == ten_digit:
-        return 1
-    if one_digit > ten_digit:
-        return 3 * (one_digit - ten_digit)
-    else:
-        return 3 * (ten_digit - one_digit)
+    return max(3 * abs(ten_digit - one_digit), 1)
     # END PROBLEM 2
 
 
