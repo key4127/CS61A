@@ -14,6 +14,13 @@ def pascal(row, column):
     6
     """
     "*** YOUR CODE HERE ***"
+    if column > row:
+        return 0
+    if column == 0:
+        return 1
+    if row == column:
+        return 1
+    return pascal(row - 1, column - 1) + pascal(row - 1, column)
 
 
 def insert_items(s, before, after):
@@ -42,6 +49,13 @@ def insert_items(s, before, after):
     True
     """
     "*** YOUR CODE HERE ***"
+    i = 0
+    while i < len(s):
+        if s[i] == before:
+            s.insert(i + 1, after)
+            i += 1
+        i += 1
+    return s
 
 
 HW_SOURCE_FILE=__file__
@@ -51,11 +65,13 @@ def planet(mass):
     """Construct a planet of some mass."""
     assert mass > 0
     "*** YOUR CODE HERE ***"
+    return ['planet', mass]
 
 def mass(p):
     """Select the mass of a planet."""
     assert is_planet(p), 'must call mass on a planet'
     "*** YOUR CODE HERE ***"
+    return p[1]
 
 def is_planet(p):
     """Whether p is a planet."""
@@ -108,7 +124,17 @@ def balanced(m):
     True
     """
     "*** YOUR CODE HERE ***"
-
+    if is_planet(m):
+        return True
+    left_arm, right_arm = left(m), right(m)
+    left_item, right_item = end(left_arm), end(right_arm)
+    if not balanced(left_item):
+        return False
+    if not balanced(right_item):
+        return False
+    if length(left_arm) * total_mass(left_item) != length(right_arm) * total_mass(right_item):
+        return False
+    return True
 
 def berry_finder(t):
     """Returns True if t contains a node with the value 'berry' and 
@@ -128,6 +154,14 @@ def berry_finder(t):
     True
     """
     "*** YOUR CODE HERE ***"
+    if label(t) == 'berry':
+        return True
+    if is_leaf(t):
+        return False
+    for branch in branches(t):
+        if berry_finder(branch):
+            return True
+    return False
 
 
 HW_SOURCE_FILE=__file__
@@ -143,6 +177,12 @@ def max_path_sum(t):
     17
     """
     "*** YOUR CODE HERE ***"
+    if is_leaf(t):
+        return label(t)
+    max_sum = 0
+    for branch in branches(t):
+        max_sum = max(max_sum, max_path_sum(branch))
+    return max_sum + label(t)
 
 
 def print_move(origin, destination):
@@ -178,6 +218,20 @@ def move_stack(n, start, end):
     """
     assert 1 <= start <= 3 and 1 <= end <= 3 and start != end, "Bad start/end"
     "*** YOUR CODE HERE ***"
+    if n == 0:
+        return
+    if n == 1:
+        print_move(start, end)
+        return
+    if start != 1 and end != 1:
+        helper = 1
+    if start != 2 and end != 2:
+        helper = 2
+    if start != 3 and end != 3:
+        helper = 3
+    move_stack(n - 1, start, helper)
+    print_move(start, end)
+    move_stack(n - 1, helper, end)
 
 
 from operator import sub, mul
@@ -193,7 +247,7 @@ def make_anonymous_factorial():
     ...     ['Assign', 'AnnAssign', 'AugAssign', 'NamedExpr', 'FunctionDef', 'Recursion'])
     True
     """
-    return 'YOUR_EXPRESSION_HERE'
+    # I cannot understand
 
 
 def mobile(left, right):
