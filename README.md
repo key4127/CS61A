@@ -19,3 +19,10 @@ csdiy对CS61A的介绍：
 录屏等内容见课程网页或csdiy。  
 
 ### 课程目录及介绍
+
+### 未完成部分
+
+由于没有Berkeley账号，有一些部分无法完成。
+
+* lab07 Q1: Mid-Semester Feedback  
+  期中调查问卷

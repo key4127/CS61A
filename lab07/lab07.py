@@ -51,6 +51,12 @@ class Account:
         """Return the number of years until balance would grow to amount."""
         assert self.balance > 0 and amount > 0 and self.interest > 0
         "*** YOUR CODE HERE ***"
+        expected_balance = self.balance
+        year = 0
+        while expected_balance < amount:
+            year += 1
+            expected_balance *= (1 + self.interest)
+        return year
 
 
 class FreeChecking(Account):
@@ -80,7 +86,16 @@ class FreeChecking(Account):
     free_withdrawals = 2
 
     "*** YOUR CODE HERE ***"
-
+    def withdraw(self, amount):
+        if self.free_withdrawals > 0:
+            self.free_withdrawals -= 1
+        else:
+            amount += self.withdraw_fee
+        if self.balance >= amount:
+            self.balance -= amount
+            return self.balance
+        else:
+            return 'Insufficient funds'
 
 class Transaction:
     def __init__(self, id, before, after):
@@ -91,6 +106,10 @@ class Transaction:
     def changed(self):
         """Return whether the transaction resulted in a changed balance."""
         "*** YOUR CODE HERE ***"
+        if self.before != self.after:
+            return True
+        else:
+            return False
 
     def report(self):
         """Return a string describing the transaction.
@@ -104,7 +123,10 @@ class Transaction:
         """
         msg = 'no change'
         if self.changed():
-            "*** YOUR CODE HERE ***"
+            if self.before < self.after:
+                return str(self.id) + ': increased ' + str(self.before) + '->' + str(self.after)
+            else:
+                return str(self.id) + ': decreased ' + str(self.before) + '->' + str(self.after)
         return str(self.id) + ': ' + msg
 
 class BankAccount:
@@ -151,11 +173,15 @@ class BankAccount:
     def __init__(self, account_holder):
         self.balance = 0
         self.holder = account_holder
+        self.transactions = []
+        self.transaction_id = 0
 
     def deposit(self, amount):
         """Increase the account balance by amount, add the deposit
         to the transaction history, and return the new balance.
         """
+        self.transactions += [Transaction(self.transaction_id, self.balance, self.balance + amount)]
+        self.transaction_id += 1
         self.balance = self.balance + amount
         return self.balance
 
@@ -164,11 +190,13 @@ class BankAccount:
         to the transaction history, and return the new balance.
         """
         if amount > self.balance:
+            self.transactions += [Transaction(self.transaction_id, self.balance, self.balance)]
+            self.transaction_id += 1
             return 'Insufficient funds'
+        self.transactions += [Transaction(self.transaction_id, self.balance, self.balance - amount)]
+        self.transaction_id += 1
         self.balance = self.balance - amount
         return self.balance
-
-
 
 
 class Email:
@@ -194,14 +222,14 @@ class Server:
         """Append the email to the inbox of the client it is addressed to.
             email is an instance of the Email class.
         """
-        ____.inbox.append(email)
+        self.clients[email.recipient_name].inbox.append(email)
 
     def register_client(self, client):
         """Add a client to the clients mapping (which is a 
         dictionary from client names to client instances).
             client is an instance of the Client class.
         """
-        ____[____] = ____
+        self.clients[client.name] = client
 
 class Client:
     """A client has a server, a name (str), and an inbox (list).
@@ -224,11 +252,11 @@ class Client:
         self.inbox = []
         self.server = server
         self.name = name
-        server.register_client(____)
+        server.register_client(self)
 
     def compose(self, message, recipient_name):
         """Send an email with the given message to the recipient."""
-        email = Email(message, ____, ____)
+        email = Email(message, self, recipient_name)
         self.server.send(email)
 
 
@@ -259,13 +287,45 @@ def make_change(amount, coins):
     >>> make_change(25, coins)
     [2, 2, 4, 4, 5, 8]
     """
+    # for readability remove some official codes
+    if not coins:
+        return None
+    "*** YOUR CODE HERE ***"
+    smallest = 0
+    solution = None
+    while solution == None:
+        if smallest == max(coins):
+           return None
+        limit = smallest
+        smallest = max(coins)
+        for coin in coins.keys():
+            if coin > limit and coin < smallest:
+                smallest = coin
+        if smallest > amount:
+            return None
+        if smallest == amount:
+            return [smallest]
+        rest = remove_one(coins, smallest)
+        solution = make_change(amount - smallest, rest)
+    return [smallest] + solution
+    # factly there is a more simple solution in walkthrough
+    # make_change(amount, rest)
+    # instead of reducing amount, it removes coins so that the program will not incrorrectly use larger coins.
+    """
     if not coins:
         return None
     smallest = min(coins)
     rest = remove_one(coins, smallest)
     if amount < smallest:
         return None
-    "*** YOUR CODE HERE ***"
+    if amount == smallest:
+        return [smallest]
+    solution = make_change(amount - smallest, rest)
+    if solution == None:
+        return make_change(amount, rest)
+    else:
+        return [smallest] + solution
+    """
 
 def remove_one(coins, coin):
     """Remove one coin from a dictionary of coins. Return a new dictionary,
@@ -361,4 +421,14 @@ class ChangeMachine:
     def change(self, coin):
         """Return change for coin, removing the result from self.coins."""
         "*** YOUR CODE HERE ***"
+        solution = make_change(coin, self.coins)
+        if solution == None:
+            return [coin]
+        for each_coin in solution:
+            self.coins = remove_one(self.coins, each_coin)
+        if coin in self.coins:
+            self.coins[coin] += 1
+        else:
+            self.coins[coin] = 1
+        return solution
 
