@@ -604,7 +604,7 @@ class Bee(Insect):
 
         gamestate -- The GameState, used to access game state information.
         """
-        # I change some code here
+        # I change some code here for EC2
         destination = self.place.exit
 
         if hasattr(self, 'scared') and self.backward_length > 0:
