@@ -102,6 +102,7 @@ class Ant(Insect):
     food_cost = 0
     is_container = False
     # ADD CLASS ATTRIBUTES HERE
+    blocks_path = True
 
     def __init__(self, health=1):
         self.damage_is_doubled = False
@@ -529,12 +530,16 @@ class NinjaAnt(Ant):
     food_cost = 5
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem EC 3
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    blocks_path = False
     # END Problem EC 3
 
     def action(self, gamestate):
         # BEGIN Problem EC 3
         "*** YOUR CODE HERE ***"
+        temp_bees = self.place.bees[:]
+        for bee in temp_bees:
+            bee.reduce_health(self.damage)
         # END Problem EC 3
 
 
@@ -545,7 +550,10 @@ class LaserAnt(ThrowerAnt):
     food_cost = 10
     # OVERRIDE CLASS ATTRIBUTES HERE
     # BEGIN Problem EC 4
-    implemented = False   # Change to True to view in the GUI
+    implemented = True   # Change to True to view in the GUI
+    base_damage = 2
+    distance_debuff = 0.25
+    battery_debuff = 0.0625
     # END Problem EC 4
 
     def __init__(self, health=1):
@@ -554,12 +562,27 @@ class LaserAnt(ThrowerAnt):
 
     def insects_in_front(self):
         # BEGIN Problem EC 4
-        return {}
+        insects_to_damage = {}
+        place = self.place
+        distance = 0
+        while place != None:
+            if place.ant != None:
+                if place.ant.is_container == True and place.ant.ant_contained != self:
+                    insects_to_damage[place.ant.ant_contained] = distance
+                if place.ant != self:
+                    insects_to_damage[place.ant] = distance
+            for bee in place.bees:
+                insects_to_damage[bee] = distance
+            distance += 1
+            place = place.entrance
+        return insects_to_damage
         # END Problem EC 4
 
     def calculate_damage(self, distance):
         # BEGIN Problem EC 4
-        return 0
+        distance_debuff_damage = distance * self.distance_debuff
+        battery_debuff_damage = self.insects_shot * self.battery_debuff
+        return max(0, self.base_damage - distance_debuff_damage - battery_debuff_damage)
         # END Problem EC 4
 
     def action(self, gamestate):
@@ -595,7 +618,7 @@ class Bee(Insect):
         """Return True if this Bee cannot advance to the next Place."""
         # Special handling for NinjaAnt
         # BEGIN Problem EC 3
-        return self.place.ant is not None
+        return self.place.ant is not None and self.place.ant.blocks_path is True
         # END Problem EC 3
 
     def action(self, gamestate):
