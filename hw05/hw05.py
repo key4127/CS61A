@@ -67,9 +67,19 @@ class Player:
 
     def debate(self, other):
         "*** YOUR CODE HERE ***"
+        p1, p2 = self.popularity, other.popularity
+        probability = max(0.1, p1 / (p1 + p2))
+        random_number = self.random_func()
+        if random_number < probability:
+            self.popularity += 50
+        else:
+            self.popularity = max(0, self.popularity - 50)
 
     def speech(self, other):
         "*** YOUR CODE HERE ***"
+        self.votes += self.popularity // 10
+        self.popularity += self.popularity // 10
+        other.popularity -= other.popularity // 10
 
     def choose(self, other):
         return self.speech
@@ -99,8 +109,13 @@ class Game:
         self.turn = 0
 
     def play(self):
+        player = self.p1
+        other = self.p2
         while not self.game_over():
             "*** YOUR CODE HERE ***"
+            player.choose(other)(other)
+            player, other = other, player
+            self.turn += 1
         return self.winner()
 
     def game_over(self):
@@ -108,6 +123,12 @@ class Game:
 
     def winner(self):
         "*** YOUR CODE HERE ***"
+        if self.p1.votes == self.p2.votes:
+            return None
+        elif self.p1.votes > self.p2.votes:
+            return self.p1
+        else:
+            return self.p2
 
 
 ### Phase 3: New Players
@@ -131,6 +152,10 @@ class AggressivePlayer(Player):
     """
     def choose(self, other):
         "*** YOUR CODE HERE ***"
+        if self.popularity <= other.popularity:
+            return self.debate
+        else:
+            return self.speech
 
 class CautiousPlayer(Player):
     """
@@ -148,6 +173,10 @@ class CautiousPlayer(Player):
     """
     def choose(self, other):
         "*** YOUR CODE HERE ***"
+        if self.popularity == 0:
+            return self.debate
+        else:
+            return self.speech
 
 
 def add_d_leaves(t, v):
@@ -213,10 +242,18 @@ def add_d_leaves(t, v):
         10
     """
     "*** YOUR CODE HERE ***"
+    def add_leaves_helper(t, v, d):
+        if t.is_leaf() == False:
+            for tree in t.branches:
+                add_leaves_helper(tree, v, d + 1)
+        while d > 0:
+            d -= 1
+            t.branches.append(Tree(v))
+    add_leaves_helper(t, v, 0)
 
 
 def level_mutation_link(t, funcs):
-	"""Mutates t using the functions in the linked list funcs.
+    """Mutates t using the functions in the linked list funcs.
 
 	>>> t = Tree(1, [Tree(2, [Tree(3)])])
 	>>> funcs = Link(lambda x: x + 1, Link(lambda y: y * 5, Link(lambda z: z ** 2)))
@@ -231,17 +268,17 @@ def level_mutation_link(t, funcs):
 	>>> level_mutation_link(t3, funcs)
 	>>> t3    # Level 0: 1+1=2; Level 1: 2*5=10; no further levels, so apply remaining z ** 2: 10**2=100
 	Tree(2, [Tree(100)])
-	"""
-	if _____________________:
-		return
-	t.label = _____________________
-	remaining = _____________________
-	if __________________ and __________________:
-		while _____________________:
-			_____________________
-			remaining = remaining.rest
-	for b in t.branches:
-		_____________________
+    """
+    if funcs == Link.empty:
+        return
+    t.label = funcs.first(t.label)
+    remaining = funcs.rest
+    if t.is_leaf() == True and remaining is not Link.empty:
+        while remaining is not Link.empty:
+            t.label = remaining.first(t.label)
+            remaining = remaining.rest
+    for b in t.branches:
+        level_mutation_link(b, remaining)
 
 
 def store_digits(n):
@@ -262,6 +299,11 @@ def store_digits(n):
     >>> print("Do not use str or reversed!") if any([r in cleaned for r in ["str", "reversed"]]) else None
     """
     "*** YOUR CODE HERE ***"
+    digits_link = Link.empty
+    while n > 0:
+        digits_link = Link(n % 10, digits_link)
+        n //= 10
+    return digits_link
 
 
 def deep_map_mut(func, lnk):
@@ -284,6 +326,13 @@ def deep_map_mut(func, lnk):
     <9 <16> 25 36>
     """
     "*** YOUR CODE HERE ***"
+    if type(lnk.first) is Link:
+        deep_map_mut(func, lnk.first)
+    else:
+        lnk.first = func(lnk.first)
+    if lnk.rest is not Link.empty:
+        lnk.rest = deep_map_mut(func, lnk.rest)
+    return lnk
 
 
 def crispr_gene_insertion(lnk_of_genes, insert):
@@ -307,6 +356,18 @@ def crispr_gene_insertion(lnk_of_genes, insert):
     ()
     """
     "*** YOUR CODE HERE ***"
+    def helper(lnk_of_genes, insert, index):
+        if lnk_of_genes == Link.empty:
+            return
+        helper(lnk_of_genes.rest, insert, index + 1)
+        sub_link = lnk_of_genes.first
+        while sub_link != Link.empty:
+            if sub_link.first == "AUG":
+                for i in range(index):
+                    sub_link.rest = Link(insert, sub_link.rest)
+                return
+            sub_link = sub_link.rest
+    helper(lnk_of_genes, insert, 1)
 
 def transcribe(dna):
     """Takes a string of DNA and returns a Python list with the RNA codons.
@@ -316,7 +377,9 @@ def transcribe(dna):
     ['AUG', 'GAU', 'CGG', 'GUA', 'UUU']
     """
     dict = {'A': 'U', 'T': 'A', 'G': 'C', 'C': 'G'}
-    return __________________
+    # if there were more simple solution
+    # maybe ''.join((dict[x]) for x in dna[i: i + 3])
+    return [dict[dna[i]] + dict[dna[i + 1]] + dict[dna[i + 2]] for i in range(0, len(dna) - 1, 3)]
 
 
 class Tree:
