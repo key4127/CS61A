@@ -24,6 +24,13 @@ csdiy对CS61A的介绍：
 
 ### 未完成部分
 
+fa24:  
+
+* lab02 Q6 HOF Diagram Practice
+
+
+sp24:  
+
 由于没有Berkeley账号/个人原因，有一些部分无法完成。
 
 * sp2024 lab07 Q1: Mid-Semester Feedback  
