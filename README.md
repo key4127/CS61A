@@ -42,6 +42,7 @@ fa24:
 
 * ants EC1 - EC4 (但在sp24分支中已完成)
 
+* scheme EC
 
 sp24:  
 
