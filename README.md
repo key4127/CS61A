@@ -44,6 +44,8 @@ fa24:
 
 * scheme EC
 
+* scheme contest
+
 sp24:  
 
 * sp2024 lab07 Q1 Mid-Semester Feedback  
