@@ -5,10 +5,17 @@
 
 ;; Problem 15
 ;; Returns a list of two-element lists
+;; There may be a more simple way?
 (define (enumerate s)
   ; BEGIN PROBLEM 15
-  'replace-this-line
+  (define (help s cnt)
+    (if (null? s)
+      nil
+      (append (list (list cnt (car s))) (help (cdr s) (+ cnt 1)))
+    )
   )
+  (help s 0)
+)
   ; END PROBLEM 15
 
 ;; Problem 16
@@ -17,7 +24,16 @@
 ;; the merged lists.
 (define (merge ordered? s1 s2)
   ; BEGIN PROBLEM 16
-  'replace-this-line
+  (if (null? s1)
+    s2
+    (if (null? s2)
+      s1
+      (if (ordered? (car s1) (car s2))
+        (cons (car s1) (merge ordered? (cdr s1) s2))
+        (cons (car s2) (merge ordered? s1 (cdr s2)))
+        )
+      )
+    )
   )
   ; END PROBLEM 16
 
