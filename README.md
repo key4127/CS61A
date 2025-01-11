@@ -24,7 +24,7 @@ CS61A换成了2024fall的网址。我原定学习spring2024，现在暂时改为
 录屏等内容见课程网页或csdiy。 
 
 我的笔记：  
-编写中  
+[https://key4127.github.io/docs/category/cs61a](https://key4127.github.io/docs/category/cs61a)（编写中）  
 
 ### 课程目录及介绍
 
