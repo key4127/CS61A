@@ -46,6 +46,8 @@ fa24:
 
 * scheme contest
 
+* hw10 Q4
+
 sp24:  
 
 * sp2024 lab07 Q1 Mid-Semester Feedback  
