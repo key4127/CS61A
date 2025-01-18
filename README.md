@@ -46,7 +46,9 @@ fa24:
 
 * scheme contest
 
-* hw10 Q4
+* hw10 Q4 （反正马上就要学SQL了）
+
+* lab12 使用了提示中了模板
 
 sp24:  
 
