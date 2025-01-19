@@ -24,7 +24,7 @@ CS61A换成了2024fall的网址。我原定学习spring2024，现在暂时改为
 录屏等内容见课程网页或csdiy。 
 
 我的笔记：  
-[https://key4127.github.io/docs/category/cs61a](https://key4127.github.io/docs/category/cs61a)（编写中）  
+[https://key4127.github.io/docs/category/cs61a](https://key4127.github.io/docs/category/cs61a) 
 
 ### 课程目录及介绍
 
@@ -46,7 +46,7 @@ fa24:
 
 * scheme contest
 
-* hw10 Q4 （反正马上就要学SQL了）
+* hw10 Q4（未独立完成）
 
 * lab12 使用了提示中了模板
 
